@@ -1,0 +1,12 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: istio-system
+  annotations:
+    openshift.io/display-name: istio-system namespace
+    openshift.io/description: The namespace for the Service Mesh control plane components
+  labels:
+    kubernetes.io/metadata.name: istio-system
+spec:
+  finalizers:
+    - kubernetes
