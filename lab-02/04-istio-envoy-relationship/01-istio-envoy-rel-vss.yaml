@@ -1,0 +1,45 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: istio-envoy-rel-vss-template
+objects:
+  - apiVersion: networking.istio.io/v1alpha3
+    kind: VirtualService
+    metadata:
+      name: back-golang
+    spec:
+      gateways:
+      - back-golang
+      - mesh
+      hosts:
+      - back-golang-${USER_NAMESPACE}.${OCP_APPS_DOMAIN}
+      - back-golang.${USER_NAMESPACE}.svc.cluster.local
+      - back-golang
+      http:
+      - route:
+          - destination:
+              host: back-golang.${USER_NAMESPACE}.svc.cluster.local
+              subset: v1
+            weight: 50
+          - destination:
+              host: back-golang.${USER_NAMESPACE}.svc.cluster.local
+              subset: v2
+            weight: 50
+        match:
+          - uri:
+              regex: /.*
+        rewrite:
+          uri: "/jump"
+        headers:
+          response:
+            set:
+              redirection: istio-envoy-relationship-test
+parameters:
+  - description: Tutorial User Namespace
+    displayName: Tutorial User Namespace
+    name: USER_NAMESPACE
+    required: true
+  - description: Openshift Apps Domain
+    displayName: Openshift Apps Domain
+    name: OCP_APPS_DOMAIN
+    required: true

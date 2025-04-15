@@ -1,0 +1,51 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: istio-envoy-rel-new-micro-version-template
+objects:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app: back-golang
+        version: v2
+      name: back-golang-v2
+    spec:
+      ports:
+        - name: http-8442
+          port: 8442
+          protocol: 
+          targetPort: 8442   
+      selector:
+        app: back-golang
+        version: v2
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app: back-golang
+        version: v2
+      name: back-golang-v2
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: back-golang
+      template:
+        metadata:
+          labels:
+            name: back-golang-v2
+            app: back-golang
+            version: v2
+        spec:
+          containers:
+          - image: image-registry.openshift-image-registry.svc:5000/jump-app-cicd/back-golang:develop
+            imagePullPolicy: Always
+            name: back-golang-v2
+            ports:
+              - containerPort: 8442
+                protocol: TCP
+            resources: {}
+            env:  
+              - name: APP_REF_NAME
+                value: jump-app

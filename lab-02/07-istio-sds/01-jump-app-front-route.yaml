@@ -1,0 +1,27 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: jump-app-routes-template
+objects:
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      name: front-javascript-${USER_NAMESPACE}
+    spec:
+      host: front-javascript-${USER_NAMESPACE}.${OCP_APPS_DOMAIN}
+      to:
+        kind: Service
+        name: istio-ingressgateway
+      tls:
+        termination: passthrough
+      port:
+        targetPort: https
+parameters:
+  - description: Tutorial User Namespace
+    displayName: Tutorial User Namespace
+    name: USER_NAMESPACE
+    required: true
+  - description: Openshift Apps Domain
+    displayName: Openshift Apps Domain
+    name: OCP_APPS_DOMAIN
+    required: true

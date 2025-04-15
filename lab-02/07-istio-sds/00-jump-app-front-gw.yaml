@@ -1,0 +1,31 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: jump-app-front-gw-template
+objects:
+  - apiVersion: networking.istio.io/v1alpha3
+    kind: Gateway
+    metadata:
+      name: front-javascript
+    spec:
+      selector:
+        istio: ingressgateway
+      servers:
+        - port:
+            number: 443
+            name: https
+            protocol: HTTPS
+          tls:
+            mode: SIMPLE
+            credentialName: ${USER_NAMESPACE}-credential
+          hosts:
+          - front-javascript-${USER_NAMESPACE}.${OCP_APPS_DOMAIN}
+parameters:
+  - description: Tutorial User Namespace
+    displayName: Tutorial User Namespace
+    name: USER_NAMESPACE
+    required: true
+  - description: Openshift Apps Domain
+    displayName: Openshift Apps Domain
+    name: OCP_APPS_DOMAIN
+    required: true

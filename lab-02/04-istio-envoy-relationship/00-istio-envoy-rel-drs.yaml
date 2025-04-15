@@ -1,0 +1,23 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: istio-envoy-rel-drs-template
+objects:
+  - apiVersion: networking.istio.io/v1alpha3
+    kind: DestinationRule
+    metadata:
+      name: back-golang
+    spec:
+      host: back-golang.${USER_NAMESPACE}.svc.cluster.local
+      subsets:
+      - name: v1
+        labels:
+          version: v1
+      - labels:
+          version: v2
+        name: v2  
+parameters:
+  - description: Tutorial User Namespace
+    displayName: Tutorial User Namespace
+    name: USER_NAMESPACE
+    required: true

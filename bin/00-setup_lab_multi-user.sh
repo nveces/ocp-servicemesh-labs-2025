@@ -34,52 +34,24 @@ for ((i=1; i<=num_users; i++)); do
   USERS+=("$user_name")
 done
 
-# # checking USERS array
-# for i in ${USERS[@]}
-# do
-#   echo "We will use: htpasswd -b users.htpasswd $i $i"
-# done
-
-
-
+# Step 2: Administrator Users
 htpasswd -c -b users.htpasswd admin MzAwMjc5
 htpasswd -b users.htpasswd redhat redhat01
-htpasswd -b users.htpasswd user25 redhat01
 
+
+# Step 3: Adding user to htpasswd
 for i in ${USERS[@]}
 do
+  echo "We will use: htpasswd -b users.htpasswd $i $i"
   htpasswd -b users.htpasswd $i $i
 done
 
-exit 0
 
-GITOPS_NS="openshift-gitops"
-
-##
-# Adding user to htpasswd
-##
-# htpasswd -c -b users.htpasswd admin MzAwMjc5
-# htpasswd -c -b users.htpasswd redhat redhat01
-# htpasswd -c -b users.htpasswd user25 redhat01
-# for i in ${USERS[@]}
-# do
-#   htpasswd -b users.htpasswd $i $i
-# done
-# htpasswd  -b users.htpasswd admin MzAwMjc5
-# htpasswd  -b users.htpasswd redhat redhat01
-# htpasswd  -b users.htpasswd user25 redhat01
-
-#exit 1
-
-##
-# Creating htpasswd file in Openshift
-##
+# Step 4: Creating htpasswd file in Openshift
 oc delete secret lab-users -n openshift-config
 oc create secret generic lab-users --from-file=htpasswd=users.htpasswd -n openshift-config
 
-##
-# Configuring OAuth to authenticate users via htpasswd
-##
+# Step 5: Configuring OAuth to authenticate users via htpasswd
 cat <<EOF > oauth.yaml
 apiVersion: config.openshift.io/v1
 kind: OAuth
@@ -97,34 +69,15 @@ EOF
 
 cat oauth.yaml | oc apply -f -
 
-##
-# Disable self namespaces provisioner
-##
+# Step 6: Disable self namespaces provisioner
 oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
 
-##
-# Creating Role Binding for admin user
-##
-oc adm policy add-cluster-role-to-user admin admin
+# Step 7: Creating Role Binding for admin user
+oc adm policy add-cluster-role-to-user admin admin # for the AWS user
+oc adm policy add-cluster-role-to-user admin redhat # for the RedHat user
 
-##
-# Create Cluster Roles for Tekton (Manage triggers and get secret content in all namespaces)
-##
-#oc apply -f ./scripts/files/tekton_cluster_roles.yaml
 
-##
-# Install Pipelines Operator
-##
-#oc apply -f ./scripts/files/redhat_pipelines.yaml
-#sleep 60
-
-##
-# Install GitOps Operator
-##
-#oc apply -f ./scripts/files/redhat_gitops.yaml
-#sleep 60
-
-exit 0
+# Step 8: Creating Namespaces & Role Binding for all users
 for i in ${USERS[@]}
 do
 
@@ -173,6 +126,7 @@ do
 
 done
 
+#GITOPS_NS="openshift-gitops"
 # for i in ${USERS[@]}
 # do
 #   GITOPS_NS="${GITOPS_NS},${i}-gitops-argocd"

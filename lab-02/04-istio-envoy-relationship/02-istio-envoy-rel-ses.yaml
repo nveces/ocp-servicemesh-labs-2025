@@ -1,0 +1,31 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: istio-envoy-rel-ses-template
+objects:
+  - apiVersion: networking.istio.io/v1beta1
+    kind: ServiceEntry
+    metadata:
+      name: external-svc-dns
+    spec:
+      hosts:
+      - www.google.es
+      location: MESH_EXTERNAL
+      ports:
+      - number: 443
+        name: https
+        protocol: HTTPS
+      resolution: DNS
+      endpoints:
+      - address: front-javascript-${USER_NAMESPACE}.${OCP_APPS_DOMAIN}
+        ports:
+          https: 443
+parameters:
+  - description: Tutorial User Namespace
+    displayName: Tutorial User Namespace
+    name: USER_NAMESPACE
+    required: true
+  - description: Openshift Apps Domain
+    displayName: Openshift Apps Domain
+    name: OCP_APPS_DOMAIN
+    required: true

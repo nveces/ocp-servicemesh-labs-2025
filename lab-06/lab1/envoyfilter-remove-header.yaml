@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: httpbin-remove-custom-header
+spec:
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: SIDECAR_INBOUND
+      listener:
+        filterChain:
+          filter:
+            name: envoy.filters.network.http_connection_manager
+            subFilter:
+              name: envoy.filters.http.router
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: lab.httpbin_remove_header
+        typed_config:
+          '@type': type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+          inlineCode: |
+            function envoy_on_request(request_handle)
+              request_handle:logDebug("Running Lua filter: lab.httpbin_remove_header")
+              
+              header = request_handle:headers():get("My-Header")
+
+              if (header)
+              then
+                request_handle:logDebug("Removing header My-Header: " .. header)
+                request_handle:headers():remove("My-Header")
+              end
+            end
+  workloadSelector:
+    labels:
+      app: httpbin
