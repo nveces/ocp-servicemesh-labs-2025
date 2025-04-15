@@ -13,7 +13,6 @@ objects:
       - mesh
       hosts:
       - back-golang-${USER_NAMESPACE}.${OCP_APPS_DOMAIN}
-      - back-golang.${USER_NAMESPACE}.svc.cluster.local
       - back-golang
       http:
       - route:
@@ -29,7 +28,6 @@ objects:
       gateways:
       - mesh
       hosts:
-      - back-python.${USER_NAMESPACE}.svc.cluster.local
       - back-python
       http:
       - route:
@@ -45,7 +43,6 @@ objects:
       gateways:
       - mesh
       hosts:
-      - back-springboot.${USER_NAMESPACE}.svc.cluster.local
       - back-springboot
       http:
       - route:
@@ -63,7 +60,6 @@ objects:
       - mesh
       hosts:
       - front-javascript-${USER_NAMESPACE}.${OCP_APPS_DOMAIN}
-      - front-javascript.${USER_NAMESPACE}.svc.cluster.local
       - front-javascript
       http:
       - route:

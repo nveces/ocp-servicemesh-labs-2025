@@ -15,7 +15,7 @@ objects:
           version: v1
       - labels:
           version: v2
-        name: v2  
+        name: v2
 parameters:
   - description: Tutorial User Namespace
     displayName: Tutorial User Namespace

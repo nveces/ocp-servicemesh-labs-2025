@@ -14,7 +14,7 @@ objects:
         - name: http-8442
           port: 8442
           protocol: TCP
-          targetPort: 8442   
+          targetPort: 8442
       selector:
         app: back-golang
   - apiVersion: v1
@@ -28,7 +28,7 @@ objects:
         - name: http-8080
           port: 8444
           protocol: TCP
-          targetPort: 8080   
+          targetPort: 8080
       selector:
         app: back-python
   - apiVersion: v1
@@ -50,7 +50,7 @@ objects:
         - name: http-8778
           port: 8778
           protocol: TCP
-          targetPort: 8778   
+          targetPort: 8778
       selector:
         app: back-springboot
   - apiVersion: v1
@@ -64,6 +64,6 @@ objects:
         - name: http-8080
           port: 8080
           protocol: TCP
-          targetPort: 3000   
+          targetPort: 3000
       selector:
         app: front-javascript

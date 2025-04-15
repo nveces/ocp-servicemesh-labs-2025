@@ -14,8 +14,8 @@ objects:
       ports:
         - name: http-8442
           port: 8442
-          protocol: 
-          targetPort: 8442   
+          protocol: TCP
+          targetPort: 8442
       selector:
         app: back-golang
         version: v2
@@ -40,12 +40,20 @@ objects:
         spec:
           containers:
           - image: image-registry.openshift-image-registry.svc:5000/jump-app-cicd/back-golang:develop
+            securityContext:
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              seccompProfile:
+                type: RuntimeDefault
+              capabilities:
+                drop:
+                - ALL
             imagePullPolicy: Always
             name: back-golang-v2
             ports:
               - containerPort: 8442
                 protocol: TCP
             resources: {}
-            env:  
+            env:
               - name: APP_REF_NAME
                 value: jump-app
