@@ -84,9 +84,15 @@ do
   ##
   # Create required namespaces for each user
   ##
-  oc new-project $i-sm
+  prj_name=$i-sm
+  oc new-project $prj_name
   #oc label namespace $i-sm argocd.argoproj.io/managed-by=$i-gitops-argocd --overwrite
-  oc adm policy add-role-to-user admin $i -n $i-sm
+  oc adm policy add-role-to-user admin      $i -n $prj_name
+  oc adm policy add-role-to-user view       $i -n istio-system
+  oc adm policy add-role-to-user admin-mesh $i -n istio-system
+  oc adm policy add-role-to-user mesh-user  $i -n istio-system --role-namespace istio-system
+  #
+  oc adm policy add-role-to-user system:image-puller system:serviceaccount:$prj_name:default -n jump-app-cicd
   #oc adm policy add-role-to-user admin system:serviceaccount:$i-gitops-argocd:argocd-argocd-application-controller -n $i-jump-app-dev
 
 

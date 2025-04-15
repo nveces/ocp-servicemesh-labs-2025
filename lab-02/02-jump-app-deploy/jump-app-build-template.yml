@@ -1,0 +1,256 @@
+---
+#oc process -f ./02-jump-app-deploy/jump-app-build-template.yml --param-file=./params.env --ignore-unknown-parameters | oc apply -f -
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: jump-app-build-template
+objects:
+#
+#   - apiVersion: v1
+#     kind: Namespace
+#     metadata:
+#       name: jump-app-cicd
+#       annotations:
+#         openshift.io/display-name: jump-app-cicd namespace
+#         openshift.io/description: The namespace to build application components
+#       labels:
+#         kubernetes.io/metadata.name: jump-app-cicd
+#     spec:
+#       finalizers:
+#         - kubernetes
+# ##
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      name: nodejs14
+      namespace: jump-app-cicd
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+        - annotations: null
+          from:
+            kind: DockerImage
+            name: quay.io/acidonpe/nodejs-14-ubi8:latest
+          generation: 1
+          importPolicy: {}
+          name:  latest
+          referencePolicy:
+            type: Source
+
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      name: quarkus
+      namespace: jump-app-cicd
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+        - annotations: null
+          from:
+            kind: DockerImage
+            name: quay.io/quarkus/ubi-quarkus-native-s2i:21.3.2-java11
+          generation: 1
+          importPolicy: {}
+          name:  21.3.2-java11
+          referencePolicy:
+            type: Source
+#
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: front-javascript
+      name: front-javascript
+      namespace: jump-app-cicd
+    spec:
+      lookupPolicy:
+        local: false
+#
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: back-python
+      name: back-python
+      namespace: jump-app-cicd
+    spec:
+      lookupPolicy:
+        local: false
+#
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: back-golang
+      name: back-golang
+      namespace: jump-app-cicd
+    spec:
+      lookupPolicy:
+        local: false
+#
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: back-springboot
+      name: back-springboot
+      namespace: jump-app-cicd
+    spec:
+      lookupPolicy:
+        local: false
+#
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: back-quarkus
+      name: back-quarkus
+      namespace: jump-app-cicd
+    spec:
+      lookupPolicy:
+        local: false
+#######################
+## 1/ front-javascript
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: front-javascript
+      name: front-javascript-dev
+      namespace: jump-app-cicd
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: front-javascript:develop
+      postCommit: {}
+      resources: {}
+      source:
+        git:
+          uri: https://github.com/nveces/jump-app-typescrypt-react.git
+          ref: develop
+        type: Git
+      strategy:
+        sourceStrategy:
+          from:
+            kind: ImageStreamTag
+            name: nodejs:18-ubi8
+            namespace: openshift
+        type: Source
+#######################
+## 3/ back-python
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: back-python
+      name: back-python-dev
+      namespace: jump-app-cicd
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: back-python:develop
+      postCommit: {}
+      resources: {}
+      source:
+        git:
+          uri: https://github.com/acidonper/jump-app-python.git
+          ref: develop
+        type: Git
+      strategy:
+        sourceStrategy:
+          from:
+            kind: ImageStreamTag
+            name: python:latest
+            namespace: openshift
+        type: Source
+#######################
+## 2/ back-golang
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: back-golang
+      name: back-golang-dev
+      namespace: jump-app-cicd
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: back-golang:develop
+      postCommit: {}
+      resources: {}
+      source:
+        git:
+          uri: https://github.com/acidonper/jump-app-golang.git
+          ref: develop
+        type: Git
+      strategy:
+        dockerStrategy: {}
+        type: Docker
+#######################
+# ## 4/ back-springboot
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: back-springboot
+      name: back-springboot-dev
+      namespace: jump-app-cicd
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: back-springboot:develop
+      postCommit: {}
+      resources: {}
+      source:
+        git:
+          uri: https://github.com/nveces/jump-app-java-springboot.git
+          ref: develop
+        type: Git
+      strategy:
+        sourceStrategy:
+          from:
+            kind: ImageStreamTag
+            name: java:latest
+            namespace: openshift
+        type: Source
+#######################
+## 5/ back-quarkus
+  - apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: back-quarkus
+      name: back-quarkus-dev
+      namespace: jump-app-cicd
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: back-quarkus:develop
+      postCommit: {}
+      resources: {}
+      source:
+        git:
+          uri: https://github.com/acidonper/jump-app-quarkus.git
+          ref: develop
+        type: Git
+      strategy:
+        sourceStrategy:
+          from:
+            kind: ImageStreamTag
+            name: quarkus:21.3.2-java11
+            namespace: jump-app-cicd
+        type: Source
+
+# # EOF
