@@ -1,0 +1,18 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: quarkus-petclinic
+  labels:
+    app: quarkus-petclinic
+spec:
+  to:
+    kind: Service
+    name: quarkus-petclinic
+    weight: 100
+  port:
+    targetPort: 8080-tcp
+  # Fix -----------------
+  tls:
+    termination: edge
+  # Fix -----------------    
+  wildcardPolicy: None

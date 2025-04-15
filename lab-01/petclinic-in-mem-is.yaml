@@ -1,0 +1,14 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: quarkus-petclinic
+spec:
+  tags:
+    - name: in-mem-blue
+      from:
+        kind: DockerImage
+        name: quay.io/rhn_gps_splatas/quarkus-petclinic:in-mem-blue
+      importPolicy:
+        insecure: false
+      referencePolicy:
+        type: Source

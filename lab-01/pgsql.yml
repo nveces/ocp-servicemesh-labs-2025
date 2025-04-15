@@ -1,0 +1,70 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  #name: postgresql
+  name: petclinic-database
+spec:
+  selector:
+    #app: postgresql
+    app: petclinic-database
+  ports:
+    - name: pgsql
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # name: postgresql
+  name: petclinic-database
+spec:
+  selector:
+    matchLabels:
+      # app: postgresql
+      app: petclinic-database
+  template:
+    metadata:
+      labels:
+        # app: postgresql
+        app: petclinic-database
+    spec:
+      containers:
+        # - name: postgresql
+        - name: petclinic-database
+          image: quay.io/redhatdemo/openshift-pgsql12-primary:centos7
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "600m"
+          ports:
+            - name: tcp
+              containerPort: 5432
+          env:
+            - name: PG_USER_PASSWORD
+              # value: developer
+              value: mysecretpassword
+            - name: PG_USER_NAME
+              # value: developer
+              value: petclinic
+            - name: PG_DATABASE
+              # value: mydb
+              value: petclinic
+            - name: PG_NETWORK_MASK
+              value: all
+            - name: PG_MAX_CONNECTIONS
+              value: "800"
+            # 25% of the memory in mb
+            - name: PG_SHARED_BUFFERS
+              value: "250"
+            - name: PG_WORK_MEM
+              value: "250"
+            # 75% of the memory in GB
+            - name: PG_EFFECTIVE_CACHE_SIZE
+              value: "6"
+            - name: PG_EFFECTIVE_IO
+              value: "128"
+            # 20% of the Disk size
+            - name: PG_MAX_WAL_SIZE
+              value: "4"

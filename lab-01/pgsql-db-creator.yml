@@ -1,0 +1,36 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: petclinic-schema
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+        - name: pgsql12-client
+          image: quay.io/rhdevelopers/openshift-pgsql12-primary:centos7-clients
+          imagePullPolicy: Always
+          env:
+            - name: PGHOST
+              # value: postgresql
+              value: petclinic-database
+            - name: PGDATABASE
+              # value: mydb
+              value: petclinic
+            - name: PGUSER
+              # value: developer
+              value: petclinic
+            - name: PGPASSWORD
+              # value: developer
+              value: mysecretpassword
+
+          command: ["/usr/pgsql-12/bin/psql"]
+          args:
+            [
+              # "--dbname=mydb",
+              "--dbname=petclinic",
+              "--no-password",
+            ]
+      restartPolicy: Never
+  backoffLimit: 1
