@@ -548,11 +548,15 @@ parameters:
 - description: Sets the DETAILS service image.
   name: DETAILS_IMAGE
   displayName: DETAILS image
-  value: maistra/examples-bookinfo-details-v1
+  # splatas: Replace with Istio image
+  # value: maistra/examples-bookinfo-details-v1
+  value: istio/examples-bookinfo-details-v1
 - description: Sets the DETAILS image tag.
   name: DETAILS_TAG
   displayName: DETAILS tag 
-  value: 2.0.0
+  # splatas: Replace with Istio image
+  # value: 2.0.0
+  value: 1.20.3
 - description: Specifies how many instances of the DETAILS service to create.
   name: DETAILS_REPLICAS
   displayName: DETAILS replicas
@@ -561,11 +565,15 @@ parameters:
 - description: Sets the RATINGS service image.
   name: RATINGS_IMAGE
   displayName: RATINGS image
-  value: maistra/examples-bookinfo-ratings-v1
+  # splatas: Replace with Istio image
+  # value: maistra/examples-bookinfo-ratings-v1
+  value: istio/examples-bookinfo-ratings-v1
 - description: Sets the RATINGS image tag.
   name: RATINGS_TAG
   displayName: RATINGS tag 
-  value: 2.0.0
+  # splatas: Replace with Istio image
+  # value: 2.0.0
+  value: 1.20.3
 - description: Specifies how many instances of the RATINGS service to create.
   name: RATINGS_REPLICAS
   displayName: RATINGS replicas
@@ -574,11 +582,15 @@ parameters:
 - description: Sets the REVIEWS V1 service image.
   name: REVIEWS_V1_IMAGE
   displayName: REVIEWS V1 image
-  value: maistra/examples-bookinfo-reviews-v1
+  # splatas: Replace with Istio image
+  # value: maistra/examples-bookinfo-reviews-v1
+  value: istio/examples-bookinfo-reviews-v1
 - description: Sets the REVIEWS V1 image tag.
   name: REVIEWS_V1_TAG
   displayName: REVIEWS V1 tag 
-  value: 2.0.0
+  # splatas: Replace with Istio image
+  # value: 2.0.0
+  value: 1.20.3
 - description: Specifies how many instances of the REVIEWS V1 service to create.
   name: REVIEWS_V1_REPLICAS
   displayName: REVIEWS V1 replicas
@@ -587,11 +599,15 @@ parameters:
 - description: Sets the REVIEWS V2 service image.
   name: REVIEWS_V2_IMAGE
   displayName: REVIEWS V2 image
-  value: maistra/examples-bookinfo-reviews-v2
+  # splatas: Replace with Istio image
+  # value: maistra/examples-bookinfo-reviews-v2
+  value: istio/examples-bookinfo-reviews-v2
 - description: Sets the REVIEWS V2 image tag.
   name: REVIEWS_V2_TAG
   displayName: REVIEWS V2 tag 
-  value: 2.0.0
+  # splatas: Replace with Istio image
+  # value: 2.0.0
+  value: 1.20.3
 - description: Specifies how many instances of the REVIEWS V2 service to create.
   name: REVIEWS_V2_REPLICAS
   displayName: REVIEWS V2 replicas
@@ -600,11 +616,15 @@ parameters:
 - description: Sets the REVIEWS V3 service image.
   name: REVIEWS_V3_IMAGE
   displayName: REVIEWS V3 image
-  value: maistra/examples-bookinfo-reviews-v3
+  # splatas: Replace with Istio image
+  # value: maistra/examples-bookinfo-reviews-v3
+  value: istio/examples-bookinfo-reviews-v3
 - description: Sets the REVIEWS V3 image tag.
   name: REVIEWS_V3_TAG
   displayName: REVIEWS V3 tag 
-  value: 2.0.0
+  # splatas: Replace with Istio image
+  # value: 2.0.0
+  value: 1.20.3
 - description: Specifies how many instances of the REVIEWS V3 service to create.
   name: REVIEWS_V3_REPLICAS
   displayName: REVIEWS V3 replicas
@@ -613,11 +633,15 @@ parameters:
 - description: Sets the PRODUCTPAGE service image.
   name: PRODUCTPAGE_IMAGE
   displayName: PRODUCTPAGE image
-  value: maistra/examples-bookinfo-productpage-v1
+  # splatas: Replace with Istio image
+  # value: maistra/examples-bookinfo-productpage-v1
+  value: istio/examples-bookinfo-productpage-v1
 - description: Sets the PRODUCTPAGE image tag.
   name: PRODUCTPAGE_TAG
   displayName: PRODUCTPAGE tag 
-  value: 2.0.0
+  # splatas: Replace with Istio image
+  # value: 2.0.0
+  value: 1.20.3
 - description: Specifies how many instances of the PRODUCTPAGE service to create.
   name: PRODUCTPAGE_REPLICAS
   displayName: PRODUCTPAGE replicas
