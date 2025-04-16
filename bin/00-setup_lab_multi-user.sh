@@ -35,8 +35,8 @@ for ((i=1; i<=num_users; i++)); do
 done
 
 # Step 2: Administrator Users
-htpasswd -c -b users.htpasswd admin MzAwMjc5
-htpasswd -b users.htpasswd redhat redhat01
+htpasswd -c -b users.htpasswd redhat redhat01
+htpasswd -b users.htpasswd admin redhat01
 
 
 # Step 3: Adding user to htpasswd
@@ -89,7 +89,7 @@ do
   #oc label namespace $i-sm argocd.argoproj.io/managed-by=$i-gitops-argocd --overwrite
   oc adm policy add-role-to-user admin      $i -n $prj_name
   oc adm policy add-role-to-user view       $i -n istio-system
-  oc adm policy add-role-to-user admin-mesh $i -n istio-system
+  #oc adm policy add-role-to-user admin-mesh $i -n istio-system
   oc adm policy add-role-to-user mesh-user  $i -n istio-system --role-namespace istio-system
   #
   oc adm policy add-role-to-user system:image-puller system:serviceaccount:$prj_name:default -n jump-app-cicd

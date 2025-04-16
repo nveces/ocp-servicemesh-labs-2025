@@ -5,20 +5,19 @@ kind: Template
 metadata:
   name: jump-app-build-template
 objects:
-#
-#   - apiVersion: v1
-#     kind: Namespace
-#     metadata:
-#       name: jump-app-cicd
-#       annotations:
-#         openshift.io/display-name: jump-app-cicd namespace
-#         openshift.io/description: The namespace to build application components
-#       labels:
-#         kubernetes.io/metadata.name: jump-app-cicd
-#     spec:
-#       finalizers:
-#         - kubernetes
-# ##
+  - apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: jump-app-cicd
+      annotations:
+        openshift.io/display-name: jump-app-cicd namespace
+        openshift.io/description: The namespace to build application components
+      labels:
+        kubernetes.io/metadata.name: jump-app-cicd
+    spec:
+      finalizers:
+        - kubernetes
+##
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
     metadata:
