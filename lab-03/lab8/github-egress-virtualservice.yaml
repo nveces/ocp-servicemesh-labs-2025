@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: github-egress
+spec:
+  hosts:
+  - github.com
+  gateways:
+  - github-egress
+  - mesh
+  tls:
+  - match:
+    - gateways:
+      - mesh
+      sniHosts:
+      - github.com
+    route:
+    - destination:
+        host: istio-egressgateway.istio-system.svc.cluster.local
+      weight: 100
+  - match:
+    - gateways:
+      - github-egress
+      sniHosts:
+      - github.com
+    route:
+    - destination:
+        host: github.com
+      weight: 100
+  exportTo: [ ".", "istio-system" ]
