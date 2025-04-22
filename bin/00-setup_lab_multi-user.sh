@@ -36,7 +36,7 @@ done
 
 # Step 2: Administrator Users
 htpasswd -c -b users.htpasswd redhat redhat01
-htpasswd -b users.htpasswd admin redhat01
+htpasswd -b users.htpasswd admin MTM1NDg1
 
 
 # Step 3: Adding user to htpasswd

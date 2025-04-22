@@ -6,7 +6,7 @@ metadata:
   name: jump-app-build-template
 objects:
   - apiVersion: v1
-    kind: Namespace
+    kind: Project
     metadata:
       name: jump-app-cicd
       annotations:

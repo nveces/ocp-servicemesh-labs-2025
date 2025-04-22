@@ -1,0 +1,12 @@
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: jump-app-cicd
+  annotations:
+    openshift.io/display-name: jump-app-cicd namespace
+    openshift.io/description: The namespace to build application components
+  labels:
+    kubernetes.io/metadata.name: jump-app-cicd
+spec:
+  finalizers:
+    - kubernetes
