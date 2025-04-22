@@ -77,6 +77,76 @@ oc adm policy add-cluster-role-to-user admin admin # for the AWS user
 oc adm policy add-cluster-role-to-user admin redhat # for the RedHat user
 
 
+##
+# Creating a custom role to manage Istio Objects
+##
+cat <<EOF > admin-mesh-ws-custom-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: admin-mesh-ws
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - secrets
+    verbs:
+    - create
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    - route.openshift.io
+    resources:
+    - routes
+    verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+  - apiGroups:
+    - ""
+    - route.openshift.io
+    resources:
+    - routes/custom-host
+    verbs:
+    - create
+  - apiGroups:
+    - ""
+    - route.openshift.io
+    resources:
+    - routes/status
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    - route.openshift.io
+    resources:
+    - routes
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - maistra.io
+    resources:
+    - servicemeshmemberrolls
+    verbs:
+    - get
+    - list
+    - watch
+EOF
+
+cat admin-mesh-ws-custom-role.yaml | oc apply -f -
+
+
 # Step 8: Creating Namespaces & Role Binding for all users
 for i in ${USERS[@]}
 do
@@ -87,10 +157,10 @@ do
   prj_name=$i-sm
   oc new-project $prj_name
   #oc label namespace $i-sm argocd.argoproj.io/managed-by=$i-gitops-argocd --overwrite
-  oc adm policy add-role-to-user admin      $i -n $prj_name
-  oc adm policy add-role-to-user view       $i -n istio-system
-  #oc adm policy add-role-to-user admin-mesh $i -n istio-system
-  oc adm policy add-role-to-user mesh-user  $i -n istio-system --role-namespace istio-system
+  oc adm policy add-role-to-user admin         $i -n $prj_name
+  oc adm policy add-role-to-user view          $i -n istio-system
+  oc adm policy add-role-to-user admin-mesh-ws $i -n istio-system
+  oc adm policy add-role-to-user mesh-user     $i -n istio-system --role-namespace istio-system
   #
   oc adm policy add-role-to-user system:image-puller system:serviceaccount:$prj_name:default -n jump-app-cicd
   #oc adm policy add-role-to-user admin system:serviceaccount:$i-gitops-argocd:argocd-argocd-application-controller -n $i-jump-app-dev
