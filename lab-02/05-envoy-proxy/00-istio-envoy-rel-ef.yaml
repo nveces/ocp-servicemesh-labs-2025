@@ -27,7 +27,7 @@ objects:
             value:
               name: envoy.filters.http.lua.add.headers
               typed_config:
-                "@type": "type.googleapis.com/envoy.config.filter.http.lua.v2.Lua"
+                "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
                 inlineCode: |
                   function envoy_on_response(request_handle)
                     request_handle:logInfo("Adding envoy-filter-test header")
