@@ -13,7 +13,6 @@ objects:
       - mesh
       hosts:
       - back-golang-${USER_NAMESPACE}.${OCP_APPS_DOMAIN}
-      - back-golang.${USER_NAMESPACE}.svc.cluster.local
       - back-golang
       http:
       - route:
