@@ -146,6 +146,34 @@ EOF
 
 cat admin-mesh-ws-custom-role.yaml | oc apply -f -
 
+##
+# Creating a custom role to manage Istio Objects
+##
+cat <<EOF > mesh-ws-custom-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: mesh-ws
+rules:
+  - apiGroups:
+    - ""
+    resources:
+      - pods
+      - pods/log
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+    - ""
+    resources:
+      - pods/exec
+    verbs:
+      - "*"
+EOF
+
+
+cat mesh-ws-custom-role.yaml | oc apply -f -
 
 # Step 8: Creating Namespaces & Role Binding for all users
 for i in ${USERS[@]}
@@ -160,6 +188,9 @@ do
   oc adm policy add-role-to-user admin         $i -n $prj_name
   oc adm policy add-role-to-user view          $i -n istio-system
   oc adm policy add-role-to-user admin-mesh-ws $i -n istio-system
+  oc adm policy add-role-to-user mesh-ws       $i -n istio-system
+  oc adm policy add-role-to-user view          $i -n openshift-ingress
+  oc adm policy add-role-to-user mesh-ws       $i -n openshift-ingress
   oc adm policy add-role-to-user mesh-user     $i -n istio-system --role-namespace istio-system
   #
   oc adm policy add-role-to-user system:image-puller system:serviceaccount:$prj_name:default -n jump-app-cicd
