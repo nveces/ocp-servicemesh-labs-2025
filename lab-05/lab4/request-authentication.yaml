@@ -1,0 +1,28 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: request-authentication
+objects:
+- apiVersion: security.istio.io/v1beta1
+  kind: RequestAuthentication
+  metadata:
+    name: ${INGRESS_GW}-request-authentication
+    namespace: istio-system
+  spec:
+    selector:
+      matchLabels:
+        app: ${INGRESS_GW}
+    jwtRules:
+    - forwardOriginalToken: true
+      issuer: ${OIDC_ISSUER_URL}
+      jwksUri: ${OIDC_JWKS_URI}
+parameters:
+- description:  Specific ingress gateway that productpage service will be bound to be exposed
+  name: INGRESS_GW
+  required: true
+- description:  OIDC issuer url 
+  name: OIDC_ISSUER_URL
+  required: true
+- description:  OIDC JSON web kit set uri 
+  name: OIDC_JWKS_URI
+  required: true

@@ -1,0 +1,25 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: allow-ratings
+objects:
+- kind: AuthorizationPolicy
+  apiVersion: security.istio.io/v1beta1
+  metadata:
+    name: allow-ratings
+  spec:
+    selector:
+      matchLabels:
+        app: ratings
+    action: ALLOW
+    rules:
+    - from:
+      - source:
+          principals: ["cluster.local/ns/${APPS_NS}/sa/bookinfo-reviews"]
+      to:
+      - operation:
+          methods: ["GET"]
+parameters:
+- description:  Namespace where the services are deployed
+  name: APPS_NS
+  required: true

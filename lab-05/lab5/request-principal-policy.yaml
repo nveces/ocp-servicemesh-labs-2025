@@ -1,0 +1,21 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: productpage-request-principal
+objects:  
+- apiVersion: security.istio.io/v1beta1
+  kind: AuthorizationPolicy
+  metadata:
+    name: productpage-request-principal
+  spec:
+    selector:
+      matchLabels:
+        app: productpage
+    rules:
+    - from:
+      - source:
+          requestPrincipals: ["${USER_ACCOUNT}"]
+parameters:
+- description:  User account
+  name: USER_ACCOUNT
+  required: true

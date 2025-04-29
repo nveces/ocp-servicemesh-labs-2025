@@ -1,0 +1,25 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: allow-details
+objects:
+- kind: AuthorizationPolicy
+  apiVersion: security.istio.io/v1beta1
+  metadata:
+    name: allow-details
+  spec:
+    selector:
+      matchLabels:
+        app: details
+    action: ALLOW
+    rules:
+    - from:
+      - source:
+          principals: ["cluster.local/ns/${APPS_NS}/sa/bookinfo-productpage"]
+      to:
+      - operation:
+          methods: ["GET"]
+parameters:
+- description:  Namespace where the services are deployed
+  name: APPS_NS
+  required: true

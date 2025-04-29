@@ -1,0 +1,80 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: productpage
+objects:
+- kind: Route
+  apiVersion: route.openshift.io/v1
+  metadata:
+    name: ${INGRESS_GW}-productpage
+    namespace: ${MESH_NS} 
+  spec:
+    host: ${PRODUCTPAGE_HOST}
+    to:
+      kind: Service
+      name: ${INGRESS_GW}
+      weight: 100
+    port:
+      targetPort: https
+    tls:
+      termination: passthrough
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
+- kind: Gateway
+  apiVersion: networking.istio.io/v1alpha3
+  metadata:
+    name: ${INGRESS_GW}-productpage
+    namespace: ${APPS_NS}
+  spec:
+    servers:
+      - hosts:
+          - ${PRODUCTPAGE_HOST}
+        port:
+          number: 443
+          name: https
+          protocol: HTTPS
+        tls:
+          mode: SIMPLE
+          credentialName: apps-credential
+    selector:
+      app: ${INGRESS_GW}
+- kind: VirtualService
+  apiVersion: networking.istio.io/v1alpha3
+  metadata:
+    name: productpage
+    namespace: ${APPS_NS}
+  spec:
+    hosts:
+      - ${PRODUCTPAGE_HOST}
+    gateways:
+      - ${INGRESS_GW}-productpage
+    http:
+      - route:
+          - destination:
+              host: productpage
+              subset: v1
+            weight: 100
+- kind: DestinationRule
+  apiVersion: networking.istio.io/v1alpha3
+  metadata:
+    name: productpage
+    namespace: ${APPS_NS}
+  spec:
+    host: productpage
+    subsets:
+      - labels:
+          version: v1
+        name: v1
+parameters:
+- description:  Namespace for the productpage service is deployed
+  name: APPS_NS
+  required: true
+- description:  Namespace for the Istio control plane
+  name: MESH_NS
+  required: true
+- description:  Specific ingress gateway that productpage service will be bound to be exposed
+  name: INGRESS_GW
+  required: true
+- description:  Productpage domain 
+  name: PRODUCTPAGE_HOST
+  required: true

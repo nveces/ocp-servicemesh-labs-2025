@@ -1,0 +1,25 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: allow-reviews-from-ns1
+objects:
+- kind: AuthorizationPolicy
+  apiVersion: security.istio.io/v1beta1
+  metadata:
+    name: allow-reviews-from-ns1
+  spec:
+    selector:
+      matchLabels:
+        app: reviews
+    action: ALLOW
+    rules:
+    - from:
+      - source:
+          namespaces: ["${APPS_NS1}"]
+      to:
+      - operation:
+          methods: ["GET"]
+parameters:
+- description:  Namespace where the productpage service is deployed
+  name: APPS_NS1
+  required: true

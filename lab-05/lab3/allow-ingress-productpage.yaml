@@ -1,0 +1,25 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: allow-ingress-productpage
+objects:
+- kind: AuthorizationPolicy
+  apiVersion: security.istio.io/v1beta1
+  metadata:
+    name: allow-ingress-productpage
+  spec:
+    selector:
+      matchLabels:
+        app: productpage
+    action: ALLOW
+    rules:
+    - from:
+      - source:
+          principals: ["cluster.local/ns/istio-system/sa/${INGRESS_GW}-service-account"]
+      to:
+      - operation:
+          paths: ["*"]
+parameters:
+- description:  Specific ingress gateway that productpage service will be bound to be exposed
+  name: INGRESS_GW
+  required: true

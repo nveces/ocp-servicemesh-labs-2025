@@ -1,0 +1,24 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: productpage-hd
+objects:  
+- apiVersion: security.istio.io/v1beta1
+  kind: AuthorizationPolicy
+  metadata:
+    name: productpage-hd
+  spec:
+    selector:
+      matchLabels:
+        app: productpage
+    rules:
+    - from:
+      - source:
+          requestPrincipals: ["*"]
+      when:
+      - key: request.auth.claims[hd]
+        values: ["${HD}"]
+parameters:
+- description:  Hosted domain
+  name: HD
+  required: true

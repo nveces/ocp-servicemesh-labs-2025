@@ -1,0 +1,44 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: labs-istio
+rules:
+  - verbs:
+      - '*'
+    apiGroups:
+      - rbac.istio.io
+      - security.istio.io
+      - rbac.maistra.io
+      - networking.istio.io
+    resources:
+      - '*'
+  - verbs:
+      - '*' 
+    apiGroups:
+      - ''
+      - route.openshift.io
+    resources:
+      - routes
+  - apiGroups: 
+      - "" 
+      - route.openshift.io 
+    resources: 
+      - routes/custom-host 
+    verbs: 
+      - create 
+  - verbs:
+      - '*'
+    apiGroups:
+      - ''
+      - template.openshift.io
+    resources:
+      - processedtemplates
+      - templateconfigs
+      - templateinstances
+      - templates
+  - verbs:
+      - '*'
+    apiGroups:
+      - ''
+    resources:
+      - pods/exec

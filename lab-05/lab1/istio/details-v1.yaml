@@ -1,0 +1,24 @@
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: details
+spec:
+  hosts:
+    - details
+  http:
+    - route:
+        - destination:
+            host: details
+            subset: v1
+          weight: 100
+--- 
+kind: DestinationRule
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: details
+spec:
+  host: details
+  subsets:
+    - labels:
+        version: v1
+      name: v1

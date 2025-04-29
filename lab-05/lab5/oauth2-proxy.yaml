@@ -1,0 +1,164 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: oauth2-proxy
+objects:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: oauth2-proxy
+  stringData:
+    OAUTH2_PROXY_CLIENT_ID: ${CLIENT_ID}
+    OAUTH2_PROXY_CLIENT_SECRET: ${CLIENT_SECRET}
+    OAUTH2_PROXY_COOKIE_SECRET: ${COOKIE_SECRET}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: oauth2-proxy
+  spec:
+    selector:
+      app: oauth2-proxy
+    ports:
+    - name: http
+      port: 4180
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: oauth2-proxy
+  spec:
+    selector:
+      matchLabels:
+        app: oauth2-proxy
+        version: v7
+    template:
+      metadata:
+        labels:
+          app: oauth2-proxy
+          version: v7
+        annotations:
+          sidecar.istio.io/inject: "true"
+      spec:
+        containers:
+        - name: oauth2-proxy
+          image: quay.io/oauth2-proxy/oauth2-proxy:v7.0.1
+          args:
+          - --provider=oidc
+          - --cookie-secure=true
+          - --cookie-samesite=lax
+          - --cookie-refresh=30m
+          - --cookie-expire=4h
+          - --cookie-name=_oauth2_proxy_${INGRESS_GW}
+          - --set-authorization-header=true
+          - --email-domain=*
+          - --http-address=0.0.0.0:4180
+          - --upstream=static://200
+          - --skip-provider-button=true
+          - --whitelist-domain=${APP_DOMAIN}
+          - --oidc-issuer-url=${OIDC_ISSUER_URL}
+          env:
+          - name: OAUTH2_PROXY_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: oauth2-proxy
+                key: OAUTH2_PROXY_CLIENT_ID
+          - name: OAUTH2_PROXY_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: oauth2-proxy
+                key: OAUTH2_PROXY_CLIENT_SECRET
+          - name: OAUTH2_PROXY_COOKIE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: oauth2-proxy
+                key: OAUTH2_PROXY_COOKIE_SECRET
+          resources:
+            requests:
+              cpu: 10m
+              memory: 100Mi
+          ports:
+          - containerPort: 4180
+            protocol: TCP
+          readinessProbe:
+            periodSeconds: 3
+            httpGet:
+              path: /ping
+              port: 4180
+- kind: VirtualService
+  apiVersion: networking.istio.io/v1alpha3
+  metadata:
+    name: oauth2-proxy
+  spec:
+    hosts:
+      - oauth2-proxy
+    http:
+      - route:
+          - destination:
+              host: oauth2-proxy
+              subset: v7
+            weight: 100
+- kind: DestinationRule
+  apiVersion: networking.istio.io/v1alpha3
+  metadata:
+    name: oauth2-proxy
+  spec:
+    host: oauth2-proxy
+    subsets:
+      - labels:
+          version: v7
+        name: v7
+    trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
+- apiVersion: networking.istio.io/v1alpha3
+  kind: ServiceEntry
+  metadata:
+    name: accounts-google
+  spec:
+    hosts:
+    - accounts.google.com
+    location: MESH_EXTERNAL
+    ports:
+    - number: 443
+      name: https
+      protocol: TLS
+    resolution: DNS
+    exportTo:
+    - ${OAUTH_NS}
+- apiVersion: networking.istio.io/v1alpha3
+  kind: ServiceEntry
+  metadata:
+    name: oauth2-googleapis
+  spec:
+    hosts:
+    - oauth2.googleapis.com
+    - www.googleapis.com
+    location: MESH_EXTERNAL
+    ports:
+    - number: 443
+      name: https
+      protocol: TLS
+    resolution: DNS
+    exportTo:
+    - ${OAUTH_NS}
+parameters:
+- description:  Specific ingress gateway that productpage service will be bound to be exposed
+  name: INGRESS_GW
+  required: true
+- description:  Client id associated to our application in the OAuth server 
+  name: CLIENT_ID
+  required: true
+- description:  Client secret associated to our application in OAuth server. This is sensitive information
+  name: CLIENT_SECRET
+  required: true
+- description:  The seed string for secure cookies
+  name: COOKIE_SECRET
+  required: true
+- description:  App domain
+  name: APP_DOMAIN
+  required: true
+- description:  JWT token issuer
+  name: OIDC_ISSUER_URL
+  required: true
+- description:  Namespace where the OAuth2 proxy is deployed
+  name: OAUTH_NS
+  required: true

@@ -1,0 +1,25 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: request-authentication
+objects:
+- apiVersion: security.istio.io/v1beta1
+  kind: RequestAuthentication
+  metadata:
+    name: ${APPS_NS}-request-authentication
+    namespace: ${APPS_NS}
+  spec:
+    jwtRules:
+    - forwardOriginalToken: true
+      issuer: ${OIDC_ISSUER_URL}
+      jwksUri: ${OIDC_JWKS_URI}
+parameters:
+- description:  Namespace where apps are deployed
+  name: APPS_NS
+  required: true
+- description:  OIDC issuer url 
+  name: OIDC_ISSUER_URL
+  required: true
+- description:  OIDC JSON web kit set uri 
+  name: OIDC_JWKS_URI
+  required: true
