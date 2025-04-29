@@ -177,6 +177,32 @@ cat template-custom-role.yaml | oc apply -f -
 
 
 ##
+# Creating a custom role to create WASM extensions
+##
+cat <<EOF > wasm-mesh-custom-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: wasm-mesh
+rules:
+  - apiGroups:
+    - extensions.istio.io
+    resources:
+    - wasmplugins
+    verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+EOF
+
+cat wasm-mesh-custom-role.yaml | oc apply -f -
+
+##
 # Adding required roles to users
 ##
 for i in ${USERS[@]}
@@ -201,8 +227,10 @@ do
   oc adm policy add-role-to-user mesh-user      $i -n istio-system --role-namespace istio-system
 
   # Apply permission in their namespaces
-  oc adm policy add-role-to-user admin $i -n ${prj_name}
-  oc adm policy add-role-to-user admin $i -n ${prj_name}-mesh-external
+  oc adm policy add-role-to-user admin     $i -n ${prj_name}
+  oc adm policy add-role-to-user wasm-mesh $i -n ${prj_name}
+  oc adm policy add-role-to-user admin     $i -n ${prj_name}-mesh-external
+
 done
 
 
