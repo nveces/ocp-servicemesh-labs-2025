@@ -12,7 +12,8 @@ objects:
     host: ${PRODUCTPAGE_HOST}
     to:
       kind: Service
-      name: ${INGRESS_GW}
+      # name: ${INGRESS_GW}
+      name: istio-ingressgateway
       weight: 100
     port:
       targetPort: https
@@ -35,9 +36,12 @@ objects:
           protocol: HTTPS
         tls:
           mode: SIMPLE
-          credentialName: apps-credential
+          # credentialName: apps-credential ==> user08-sm-credential
+          credentialName: ${APPS_NS1}-credential
+          # credentialName: user08-sm-credential
     selector:
-      app: ${INGRESS_GW}
+      # app: ${INGRESS_GW}
+      app: istio-ingressgateway
 - kind: VirtualService
   apiVersion: networking.istio.io/v1alpha3
   metadata:
