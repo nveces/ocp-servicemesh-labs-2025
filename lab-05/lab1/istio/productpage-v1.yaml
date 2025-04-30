@@ -6,8 +6,8 @@ objects:
 - kind: Route
   apiVersion: route.openshift.io/v1
   metadata:
-    name: ${INGRESS_GW}-productpage
-    namespace: ${MESH_NS} 
+    name: ${APPS_NS}-productpage
+    namespace: ${MESH_NS}
   spec:
     host: ${PRODUCTPAGE_HOST}
     to:
@@ -24,7 +24,7 @@ objects:
 - kind: Gateway
   apiVersion: networking.istio.io/v1alpha3
   metadata:
-    name: ${INGRESS_GW}-productpage
+    name: ${APPS_NS}-productpage
     namespace: ${APPS_NS}
   spec:
     servers:
@@ -37,7 +37,7 @@ objects:
         tls:
           mode: SIMPLE
           # credentialName: apps-credential ==> user08-sm-credential
-          credentialName: ${APPS_NS1}-credential
+          credentialName: ${APPS_NS}-credential
           # credentialName: user08-sm-credential
     selector:
       # app: ${INGRESS_GW}
@@ -51,7 +51,7 @@ objects:
     hosts:
       - ${PRODUCTPAGE_HOST}
     gateways:
-      - ${INGRESS_GW}-productpage
+      - ${APPS_NS}-productpage
     http:
       - route:
           - destination:
@@ -79,6 +79,6 @@ parameters:
 - description:  Specific ingress gateway that productpage service will be bound to be exposed
   name: INGRESS_GW
   required: true
-- description:  Productpage domain 
+- description:  Productpage domain
   name: PRODUCTPAGE_HOST
   required: true

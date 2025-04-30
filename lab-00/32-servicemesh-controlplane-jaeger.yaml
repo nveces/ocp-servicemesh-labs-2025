@@ -50,6 +50,8 @@ spec:
       install:
         storage:
           type: Memory
+          memory:
+            maxTraces: 100000
     prometheus:
       enabled: true
   telemetry:
