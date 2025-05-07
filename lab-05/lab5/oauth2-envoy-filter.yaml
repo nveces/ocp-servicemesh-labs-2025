@@ -27,7 +27,8 @@ objects:
         value:
           name: envoy.filters.http.ext_authz
           typed_config:
-            "@type": type.googleapis.com/envoy.config.filter.http.ext_authz.v2.ExtAuthz
+            # "@type": type.googleapis.com/envoy.config.filter.http.ext_authz.v2.ExtAuthz
+            "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
             http_service:
               server_uri:
                 uri: http://oauth2-proxy.${OAUTH_NS}.svc.cluster.local:4180
