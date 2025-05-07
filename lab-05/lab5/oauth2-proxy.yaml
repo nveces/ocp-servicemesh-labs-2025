@@ -145,6 +145,9 @@ parameters:
 - description:  Specific ingress gateway that productpage service will be bound to be exposed
   name: INGRESS_GW
   required: true
+- description:  The assigned user
+  name: USER
+  required: true
 - description:  Client id associated to our application in the OAuth server 
   name: CLIENT_ID
   required: true
