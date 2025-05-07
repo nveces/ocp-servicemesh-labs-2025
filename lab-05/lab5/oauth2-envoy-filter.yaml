@@ -19,7 +19,8 @@ objects:
         listener:
           filterChain:
             filter:
-              name: envoy.http_connection_manager
+              # name: envoy.http_connection_manager
+              name: envoy.filters.network.http_connection_manager
               subFilter:
                 name: envoy.filters.http.jwt_authn
       patch:
