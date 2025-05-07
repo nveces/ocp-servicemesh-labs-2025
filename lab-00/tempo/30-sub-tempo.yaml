@@ -10,3 +10,4 @@ spec:
   source: redhat-operators
   sourceNamespace: openshift-marketplace
   startingCSV: tempo-operator.v0.15.4-1
+---

@@ -1,0 +1,13 @@
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: openshift-tempo-operator
+  labels:
+    kubernetes.io/metadata.name: openshift-tempo-operator
+    #openshift.io/cluster-monitoring: "true"
+  annotations:
+    openshift.io/display-name: openshift-tempo-operator namespace
+    openshift.io/description: The namespace for the tempo operator
+spec:
+  finalizers:
+    - kubernetes

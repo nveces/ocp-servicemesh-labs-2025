@@ -1,0 +1,11 @@
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: tempo-bucket-odf
+  namespace: tempo-observability
+spec:
+  additionalConfig:
+    bucketclass: noobaa-default-bucket-class
+  generateBucketName: tempo-bucket-odf
+  storageClassName: openshift-storage.noobaa.io
+# a secret is created: "tempo-bucket-odf"

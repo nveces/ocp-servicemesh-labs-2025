@@ -1,0 +1,13 @@
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: tempo-observability
+  labels:
+    kubernetes.io/metadata.name: tempo-observability
+    #openshift.io/cluster-monitoring: "true"
+  annotations:
+    openshift.io/display-name: tempo-observability namespace
+    openshift.io/description: The namespace for the tempo-observability
+spec:
+  finalizers:
+    - kubernetes
