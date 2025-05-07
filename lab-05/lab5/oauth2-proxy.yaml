@@ -47,7 +47,8 @@ objects:
           - --cookie-samesite=lax
           - --cookie-refresh=30m
           - --cookie-expire=4h
-          - --cookie-name=_oauth2_proxy_${INGRESS_GW}
+          # - --cookie-name=_oauth2_proxy_${INGRESS_GW}
+          - --cookie-name=_oauth2_proxy_${USER}
           - --set-authorization-header=true
           - --email-domain=*
           - --http-address=0.0.0.0:4180
