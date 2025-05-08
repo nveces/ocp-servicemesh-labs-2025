@@ -1,0 +1,13 @@
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: openshift-opentelemetry-operator
+  labels:
+    kubernetes.io/metadata.name: openshift-opentelemetry-operator
+    openshift.io/cluster-monitoring: "true"
+  annotations:
+    openshift.io/display-name: OpenTelemetry Operator namespace
+    openshift.io/description: The namespace for the OpenTelemetry Operator
+spec:
+  finalizers:
+    - kubernetes

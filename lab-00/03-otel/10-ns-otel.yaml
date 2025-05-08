@@ -1,0 +1,14 @@
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: otel
+  labels:
+    kubernetes.io/metadata.name: otel
+    # openshift.io/cluster-monitoring: "true"
+    istio-injection: enabled
+  annotations:
+    openshift.io/display-name: otel OpenTelemetry namespace
+    openshift.io/description: The namespace for the OpenTelemetry otel
+spec:
+  finalizers:
+    - kubernetes
