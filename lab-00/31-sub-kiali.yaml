@@ -5,8 +5,11 @@ metadata:
   namespace: openshift-operators
 spec:
   channel: stable
+  #channel: candidate
   installPlanApproval: Automatic
+  #installPlanApproval: Manual
   name: kiali-ossm
   source: redhat-operators
   sourceNamespace: openshift-marketplace
   startingCSV: kiali-operator.v2.4.4
+  #startingCSV: kiali-operator.v1.73.10

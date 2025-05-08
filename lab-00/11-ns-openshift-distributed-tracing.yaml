@@ -1,0 +1,12 @@
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: openshift-distributed-tracing
+  annotations:
+    openshift.io/display-name: openshift-distributed-tracing namespace
+    openshift.io/description: The namespace for the openshift-distributed-tracing components
+  labels:
+    kubernetes.io/metadata.name: openshift-distributed-tracing
+spec:
+  finalizers:
+    - kubernetes

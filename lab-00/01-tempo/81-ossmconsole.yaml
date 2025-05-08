@@ -1,0 +1,14 @@
+---
+# This CRds doesn't work with Service Mesh 2.6
+apiVersion: kiali.io/v1alpha1
+kind: OSSMConsole
+metadata:
+  name: ossmconsole
+  namespace: openshift-operators
+spec:
+  # Don't work, Only work with the 1.73 version
+  version: 2.4.4'
+  #version: default
+  # kiali:
+  #   serviceName: 'kiali'
+  #   serviceNamespace: 'istio-system'
