@@ -1,0 +1,102 @@
+# Copyright Istio Authors
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
+# splatas -----------------------------------------------------------
+# ---
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: foo
+#   labels:
+#     istio-injection: enabled
+#   #   kiali.io/member-of: istio-system
+#   #   maistra.io/member-of: istio-system
+# ---
+# apiVersion: maistra.io/v1
+# kind: ServiceMeshMember
+# metadata:
+#   name: default
+#   namespace: foo  # <- Namespace que se quiere agregar al mesh
+# spec:
+#   controlPlaneRef:
+#     name: basic            # <- Nombre del SMCP que estás usando
+#     namespace: istio-system  # <- Namespace del SMCP
+# ---
+# apiVersion: maistra.io/v1
+# kind: ServiceMeshMemberRoll
+# metadata:
+#   name: default
+#   namespace: istio-system
+# spec:
+#   # a list of projects joined into the service mesh
+#   members:
+#   - foo
+#   #   - user02-mesh
+#   memberSelectors:
+#   - matchLabels:
+#       istio-injection: enabled
+# splatas ----------------------------------------------------------
+
+##################################################################################################
+# httpbin service
+##################################################################################################
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: httpbin
+  # namespace: foo    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  # namespace: foo
+  name: httpbin
+  labels:
+    app: httpbin
+    service: httpbin
+spec:
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8080
+  selector:
+    app: httpbin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # namespace: foo  
+  name: httpbin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: httpbin
+        version: v1
+      annotations:
+        sidecar.istio.io/inject: "true"  
+    spec:
+      serviceAccountName: httpbin
+      containers:
+      - image: docker.io/mccutchen/go-httpbin:v2.15.0
+        imagePullPolicy: IfNotPresent
+        name: httpbin
+        ports:
+        - containerPort: 8080
